@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Post-Test — Modul PAI PTU</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://api.fontshare.com/v2/css?f[]=chillax@300,400,500,600,700&f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .test-hero {
+      background: linear-gradient(140deg,#1a3d28 0%,#2e7d32 65%,#1a5f6a 100%);
+      color:white; padding-block:clamp(3rem,7vw,5rem);
+      position:relative; overflow:hidden;
+    }
+    .test-hero::before {
+      content:''; position:absolute; inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1.5'/%3E%3C/svg%3E");
+      pointer-events:none;
+    }
+    .test-hero-inner { position:relative; z-index:1; }
+    .test-hero h1  { color:white; font-size:var(--text-2xl); margin-bottom:var(--space-3); }
+    .test-hero p   { color:rgba(255,255,255,.78); max-width:55ch; }
+
+    #quiz-intro, #quiz-container, #quiz-result, #pre-score-input { max-width: 760px; margin-inline:auto; }
+
+    .intro-card { background:var(--color-surface); border:1px solid var(--color-border);
+      border-radius:var(--radius-xl); padding:var(--space-10); text-align:center; }
+    .intro-card h2 { font-size:var(--text-xl); margin-bottom:var(--space-4); }
+    .intro-card p  { font-size:var(--text-sm); color:var(--color-text-muted); max-width:48ch; margin-inline:auto; margin-bottom:var(--space-6); }
+    .intro-stats  { display:flex; justify-content:center; gap:var(--space-8); flex-wrap:wrap; margin-bottom:var(--space-8); }
+    .intro-stat .num { font-family:var(--font-display); font-size:var(--text-xl); font-weight:700; color:var(--color-success); }
+    .intro-stat .lbl { font-size:var(--text-xs); color:var(--color-text-muted); }
+
+    .q-card { background:var(--color-surface); border:1px solid var(--color-border);
+      border-radius:var(--radius-xl); padding:var(--space-8); }
+    .q-progress { margin-bottom:var(--space-6); }
+    .q-progress-bar-wrap { background:var(--color-surface-offset); border-radius:var(--radius-full); height:6px; overflow:hidden; }
+    .q-progress-bar { background:var(--color-success); height:6px; border-radius:var(--radius-full); transition:width .4s; }
+    .q-num { font-size:var(--text-xs); font-weight:700; color:var(--color-text-muted); margin-bottom:var(--space-2); display:flex; justify-content:space-between; }
+    .q-dim-badge { display:inline-block; padding:.2rem .7rem; border-radius:var(--radius-full); font-size:var(--text-xs); font-weight:700; }
+    .q-text { font-size:var(--text-base); font-weight:600; color:var(--color-text); margin-bottom:var(--space-6); line-height:1.6; }
+    .q-options { display:flex; flex-direction:column; gap:var(--space-3); }
+    .q-option {
+      background:var(--color-surface-2); border:2px solid var(--color-border);
+      border-radius:var(--radius-lg); padding:var(--space-4) var(--space-5);
+      cursor:pointer; font-size:var(--text-sm); color:var(--color-text); text-align:left;
+      transition:border-color .2s, background .2s;
+    }
+    .q-option:hover:not(:disabled) { border-color:var(--color-success); background:var(--color-success-highlight); }
+    .q-option.selected-correct { border-color:var(--color-success); background:var(--color-success-highlight); color:var(--color-success); }
+    .q-option.selected-wrong   { border-color:var(--color-error);   background:var(--color-error-highlight);   color:var(--color-error); }
+    .q-option.show-correct     { border-color:var(--color-success); background:var(--color-success-highlight); color:var(--color-success); }
+    .q-feedback { margin-top:var(--space-4); padding:var(--space-3) var(--space-4);
+      border-radius:var(--radius-md); font-size:var(--text-xs); display:none; }
+    .q-feedback.show { display:block; }
+    .q-feedback.ok { background:var(--color-success-highlight); color:var(--color-success); }
+    .q-feedback.no { background:var(--color-error-highlight);   color:var(--color-error); }
+    .q-next-btn { margin-top:var(--space-6); }
+
+    /* Result */
+    .result-card { background:var(--color-surface); border:1px solid var(--color-border);
+      border-radius:var(--radius-xl); padding:var(--space-10); }
+    .result-card h2 { font-size:var(--text-xl); text-align:center; margin-bottom:var(--space-2); }
+    .result-card .subtitle { text-align:center; font-size:var(--text-sm); color:var(--color-text-muted); margin-bottom:var(--space-8); }
+    .total-score { text-align:center; margin-bottom:var(--space-8); }
+    .total-score .big { font-family:var(--font-display); font-size:5rem; font-weight:700; color:var(--color-success); line-height:1; }
+    .total-score .sub { font-size:var(--text-sm); color:var(--color-text-muted); margin-top:var(--space-2); }
+
+    .dim-scores { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-4); margin-bottom:var(--space-8); }
+    @media(max-width:600px){ .dim-scores{grid-template-columns:1fr;} }
+    .dim-score-card { border-radius:var(--radius-xl); padding:var(--space-6); text-align:center; }
+    .dim-score-card .d-num { font-family:var(--font-display); font-size:2.5rem; font-weight:700; }
+    .dim-score-card .d-label { font-size:var(--text-xs); margin-top:var(--space-1); opacity:.8; }
+    .dim-score-card .d-name  { font-size:var(--text-xs); font-weight:700; margin-top:var(--space-1); }
+
+    /* N-Gain */
+    .ngain-section { background:var(--color-surface-offset); border-radius:var(--radius-xl); padding:var(--space-8); margin-bottom:var(--space-8); }
+    .ngain-section h3 { font-size:var(--text-lg); font-weight:700; margin-bottom:var(--space-4); }
+    .ngain-big { font-family:var(--font-display); font-size:3.5rem; font-weight:700; line-height:1; }
+    .ngain-label { font-size:var(--text-sm); color:var(--color-text-muted); margin-top:var(--space-1); }
+    .ngain-bar-wrap { background:var(--color-border); border-radius:var(--radius-full); height:12px; overflow:hidden; margin-block:var(--space-4); }
+    .ngain-bar { height:12px; border-radius:var(--radius-full); transition:width 1s; }
+    .ngain-ticks { display:flex; justify-content:space-between; font-size:var(--text-xs); color:var(--color-text-muted); margin-top:var(--space-1); }
+
+    /* Pre score input */
+    .prescore-card { background:var(--color-surface); border:1px solid var(--color-border);
+      border-radius:var(--radius-xl); padding:var(--space-8); margin-bottom:var(--space-6); }
+    .prescore-card h3 { font-size:var(--text-lg); font-weight:700; margin-bottom:var(--space-4); }
+    .prescore-card p { font-size:var(--text-sm); color:var(--color-text-muted); margin-bottom:var(--space-4); }
+    .score-input { display:flex; gap:var(--space-3); align-items:center; flex-wrap:wrap; }
+    .score-input input { padding:var(--space-3) var(--space-4); border:2px solid var(--color-border);
+      border-radius:var(--radius-md); font-size:var(--text-base); font-family:var(--font-body);
+      width:100px; text-align:center; }
+
+    .next-steps { display:flex; flex-wrap:wrap; gap:var(--space-3); justify-content:center; margin-top:var(--space-6); }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container container--wide">
+    <nav class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#1a5f6a"/>
+          <path d="M16 6C16 6 10 10 10 16C10 22 13 26 16 26C19 26 22 22 22 16C22 10 16 6 16 6Z" fill="none" stroke="#c8860a" stroke-width="1.5"/>
+          <circle cx="16" cy="16" r="3" fill="#c8860a"/>
+          <path d="M10 23h12" stroke="rgba(255,255,255,.35)" stroke-width="1"/>
+        </svg>
+        <span>PAI <span style="color:var(--color-gold)">PTU</span></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="dim1-rk.html">Dimensi 1</a></li>
+        <li><a href="dim2-iu.html">Dimensi 2</a></li>
+        <li><a href="dim3-se.html">Dimensi 3</a></li>
+        <li><a href="pretest.html">Pre-Test</a></li>
+        <li><a href="posttest.html" class="active">Post-Test</a></li>
+        <li><a href="kuis.html">Kuis</a></li>
+        <li><a href="video-project.html">Video Project</a></li>
+        <li><a href="panduan-dosen.html">Panduan Dosen</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="btn-theme" data-theme-toggle aria-label="Toggle tema"></button>
+        <button class="nav-mobile-btn" aria-expanded="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="test-hero">
+  <div class="container test-hero-inner">
+    <p style="font-size:var(--text-xs);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:var(--space-3);">Pertemuan 4 · P4 · Pasca-Treatment</p>
+    <h1>Post-Test Literasi Keagamaan</h1>
+    <p>Ukur perkembangan literasi keagamaanmu setelah menyelesaikan 3 dimensi materi. Skor per dimensi dan estimasi N-Gain ditampilkan langsung.</p>
+  </div>
+</section>
+
+<section class="section--sm">
+  <div class="container">
+
+    <!-- INTRO -->
+    <div id="quiz-intro">
+      <div class="intro-card reveal">
+        <div style="font-size:3rem;margin-bottom:var(--space-4);">✅</div>
+        <h2>Post-Test Literasi Keagamaan Islam</h2>
+        <p>20 soal paralel menggunakan konteks yang lebih tinggi dan aplikatif — menguji kemampuan yang sama dengan pre-test, tetapi dengan wording berbeda dan konteks kampus yang lebih kompleks.</p>
+        <div class="intro-stats">
+          <div class="intro-stat"><div class="num">20</div><div class="lbl">Soal Paralel</div></div>
+          <div class="intro-stat"><div class="num">±10</div><div class="lbl">Menit</div></div>
+          <div class="intro-stat"><div class="num">N-Gain</div><div class="lbl">Dihitung Otomatis</div></div>
+        </div>
+        <div style="background:var(--color-success-highlight);border:1px solid #a5d6a7;border-radius:var(--radius-lg);padding:var(--space-4);margin-bottom:var(--space-6);text-align:left;">
+          <p style="font-size:var(--text-xs);color:#1b5e20;margin:0;"><strong>💡 Catatan:</strong> Setelah melihat hasil, kamu akan diminta memasukkan skor pre-test untuk menghitung N-Gain. Jika lupa skor pre-test, kamu bisa langsung mengerjakan pre-test terlebih dahulu.</p>
+        </div>
+        <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap;">
+          <button class="btn btn--primary btn--lg" onclick="startQuiz()">Mulai Post-Test →</button>
+          <a href="pretest.html" class="btn btn--outline btn--lg">Kerjakan Pre-Test Dulu</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="quiz-container" style="display:none;">
+      <div class="q-card">
+        <div class="q-progress">
+          <div class="q-num">
+            <span id="q-counter">Soal 1 dari 20</span>
+            <span id="q-dim-label"></span>
+          </div>
+          <div class="q-progress-bar-wrap"><div class="q-progress-bar" id="q-progress-bar" style="width:5%;"></div></div>
+        </div>
+        <div id="q-text" class="q-text"></div>
+        <div id="q-options" class="q-options"></div>
+        <div id="q-feedback" class="q-feedback"></div>
+        <button class="btn btn--primary btn--sm q-next-btn" id="q-next-btn" onclick="nextQuestion()" style="display:none;">
+          Soal Berikutnya →
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="quiz-result" style="display:none;">
+      <div class="result-card">
+        <div style="text-align:center;font-size:3rem;margin-bottom:var(--space-4);">🎓</div>
+        <h2>Hasil Post-Test</h2>
+        <p class="subtitle">Berikut profil literasi keagamaanmu setelah menyelesaikan modul.</p>
+
+        <div class="total-score">
+          <div class="big" id="res-total">0</div>
+          <div class="sub">dari 20 soal benar</div>
+        </div>
+
+        <div class="dim-scores">
+          <div class="dim-score-card" style="background:var(--color-primary);color:white;">
+            <div class="d-num" id="res-rk">0/7</div>
+            <div class="d-label">Religious Knowledge</div>
+            <div class="d-name">Dimensi 1</div>
+          </div>
+          <div class="dim-score-card" style="background:var(--color-gold);color:white;">
+            <div class="d-num" id="res-iu">0/6</div>
+            <div class="d-label">Interpretative Understanding</div>
+            <div class="d-name">Dimensi 2</div>
+          </div>
+          <div class="dim-score-card" style="background:var(--color-secondary);color:white;">
+            <div class="d-num" id="res-se">0/7</div>
+            <div class="d-label">Social Engagement</div>
+            <div class="d-name">Dimensi 3</div>
+          </div>
+        </div>
+
+        <!-- N-Gain Calculator -->
+        <div class="prescore-card" id="prescore-card">
+          <h3>📈 Hitung N-Gain Belajar</h3>
+          <p>Masukkan skor pre-test kamu (jumlah benar dari 20) untuk menghitung estimasi N-Gain sebagai indikator efektivitas pembelajaran.</p>
+          <div class="score-input">
+            <label style="font-size:var(--text-sm);font-weight:700;">Skor Pre-Test:</label>
+            <input type="number" id="prescore-input" min="0" max="20" placeholder="0–20" />
+            <button class="btn btn--gold" onclick="calculateNGain()">Hitung N-Gain</button>
+          </div>
+        </div>
+
+        <!-- N-Gain Result -->
+        <div class="ngain-section" id="ngain-section" style="display:none;">
+          <h3>📈 Estimasi N-Gain Belajar</h3>
+          <div style="display:flex;align-items:flex-end;gap:var(--space-4);flex-wrap:wrap;margin-bottom:var(--space-4);">
+            <div>
+              <div class="ngain-big" id="ngain-value">0.00</div>
+              <div class="ngain-label" id="ngain-category">—</div>
+            </div>
+            <div style="flex:1;min-width:200px;">
+              <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--color-text-muted);margin-bottom:var(--space-1);">
+                <span>Pre: <strong id="pre-display">0</strong>/20</span>
+                <span>Post: <strong id="post-display">0</strong>/20</span>
+              </div>
+              <div class="ngain-bar-wrap"><div class="ngain-bar" id="ngain-bar" style="width:0%;background:var(--color-success);"></div></div>
+              <div class="ngain-ticks"><span>0</span><span>0.3 Rendah</span><span>0.7 Sedang</span><span>1.0 Tinggi</span></div>
+            </div>
+          </div>
+          <div id="ngain-interpretation" style="font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.7;"></div>
+        </div>
+
+        <div id="profil-section"></div>
+
+        <div class="next-steps">
+          <a href="index.html" class="btn btn--primary">🏠 Kembali ke Beranda</a>
+          <a href="panduan-dosen.html" class="btn btn--outline">📋 Panduan Dosen</a>
+          <button class="btn btn--ghost" onclick="resetQuiz()">🔄 Ulangi Post-Test</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <div class="container container--wide">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">PAI <span style="color:var(--color-gold)">PTU</span></div>
+        <p class="footer-desc">Modul digital Islam Rahmatan Lil Alamin — Perguruan Tinggi Umum.</p>
+      </div>
+      <div>
+        <p class="footer-heading">Materi</p>
+        <ul class="footer-links" role="list">
+          <li><a href="dim1-rk.html">Dimensi 1 — Religious Knowledge</a></li>
+          <li><a href="dim2-iu.html">Dimensi 2 — Interpretative Understanding</a></li>
+          <li><a href="dim3-se.html">Dimensi 3 — Social Engagement</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-heading">Instrumen</p>
+        <ul class="footer-links" role="list">
+          <li><a href="pretest.html">Pre-Test (20 Butir)</a></li>
+          <li><a href="posttest.html">Post-Test (20 Butir)</a></li>
+          <li><a href="kuis.html">Kuis</a></li>
+        <li><a href="video-project.html">Video Project</a></li>
+        <li><a href="panduan-dosen.html">Panduan Dosen</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Modul PAI Islam Rahmatan Lil Alamin · Perguruan Tinggi Umum</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+// Post-Test: 20 butir paralel (wording berbeda, konteks lebih aplikatif)
+// Dimensi mapping (post-test): RK=[1,2,3,4,5,12,20], IU=[6,8,9,13,16,18], SE=[7,10,11,14,15,17,19]
+
+const questions = [
+  // Q1 RK
+  {
+    dim:'RK', text:'Kampus merumuskan kebijakan pengabdian masyarakat berbasis nilai kemanusiaan dan keadilan. Kebijakan ini menunjukkan bahwa agama dipahami sebagai…',
+    options:['Kumpulan ritual pribadi','Tradisi budaya lokal','Sistem nilai yang mengarahkan kemaslahatan sosial','Aturan formal semata'],
+    answer:2, feedback:'Agama dipahami sebagai sistem nilai yang mengarahkan kemaslahatan sosial — bukan sekadar ritual.'
+  },
+  // Q2 RK
+  {
+    dim:'RK', text:'Dalam konflik sosial, mahasiswa menggunakan nilai agama untuk mendorong dialog dan perdamaian. Hal ini menunjukkan agama berfungsi sebagai…',
+    options:['Identitas kelompok','Alat legitimasi kepentingan','Pedoman etika dalam pengambilan keputusan sosial','Simbol budaya'],
+    answer:2, feedback:'Agama berfungsi sebagai pedoman etika dalam pengambilan keputusan sosial — termasuk resolusi konflik.'
+  },
+  // Q3 RK
+  {
+    dim:'RK', text:'Sebuah program kampus menekankan penguatan akidah, kepatuhan syariah, dan pembinaan akhlak. Analisis yang tepat adalah…',
+    options:['Hanya menekankan aspek ritual','Mengintegrasikan struktur ajaran Islam secara komprehensif','Mengabaikan aspek moral','Berorientasi administratif'],
+    answer:1, feedback:'Program ini mengintegrasikan trilogi ajaran Islam: akidah, syariah, dan akhlak secara komprehensif.'
+  },
+  // Q4 RK
+  {
+    dim:'RK', text:'Mahasiswa mengaitkan nilai wahyu dengan tantangan etika digital masa kini. Sikap ini menunjukkan peran wahyu sebagai…',
+    options:['Teks historis semata','Sumber nilai normatif dalam konteks modern','Tradisi budaya','Aturan lokal'],
+    answer:1, feedback:'Wahyu berfungsi sebagai sumber nilai normatif yang relevan dalam konteks modern, termasuk etika digital.'
+  },
+  // Q5 RK
+  {
+    dim:'RK', text:'Kebijakan kampus melarang ujaran kebencian dan menyelenggarakan literasi media. Kebijakan ini paling tepat dikaitkan dengan tujuan hifdzul…',
+    options:['din','nafs','\'aql','mal'],
+    answer:2, feedback:'Literasi media dan pencegahan ujaran kebencian berkaitan dengan hifzh al-\'aql (menjaga akal/pikiran rasional).'
+  },
+  // Q6 IU
+  {
+    dim:'IU', text:'Seseorang rajin ibadah namun sering merugikan orang lain. Evaluasi paling tepat adalah…',
+    options:['Ibadah menutupi kesalahan sosial','Kesalehan cukup dinilai dari ritual','Kesalehan sejati tercermin pada akhlak dan kebersihan hati','Kesalehan bersifat privat'],
+    answer:2, feedback:'Kesalehan sejati harus tercermin pada akhlak dan kebersihan hati — bukan ritual semata.'
+  },
+  // Q7 SE
+  {
+    dim:'SE', text:'Dalam konflik lintas keyakinan, mahasiswa memilih mediasi dan solusi adil bagi semua pihak. Sikap ini mencerminkan…',
+    options:['Tawazun','Tasamuh','Ta\'assub','Tafarruq'],
+    answer:1, feedback:'Memilih mediasi dan solusi adil lintas keyakinan mencerminkan tasamuh yang aktif (toleransi konstruktif).'
+  },
+  // Q8 IU
+  {
+    dim:'IU', text:'Mahasiswa menyeimbangkan ibadah, studi, dan pengabdian masyarakat. Prinsip yang tepat adalah…',
+    options:['Tasamuh','Tawazun','Tawassut','Tafadhul'],
+    answer:1, feedback:'Menyeimbangkan ibadah, studi, dan pengabdian = tawazun (keseimbangan multi-dimensi).'
+  },
+  // Q9 IU
+  {
+    dim:'IU', text:'Mahasiswa memverifikasi berita keagamaan sebelum membagikannya agar tidak menyesatkan publik. Tindakan ini mencerminkan hifdzul…',
+    options:['nafs','\'aql','māl','dīn'],
+    answer:1, feedback:'Tabayyun (verifikasi) melindungi kemampuan berpikir rasional = hifzh al-\'aql.'
+  },
+  // Q10 SE
+  {
+    dim:'SE', text:'Menolak plagiarisme dan selalu mencantumkan rujukan menunjukkan…',
+    options:['Kecakapan teknis','Integritas dan kejujuran akademik','Toleransi sosial','Kreativitas ilmiah'],
+    answer:1, feedback:'Anti-plagiarisme mencerminkan integritas dan kejujuran akademik — implementasi nilai amanah.'
+  },
+  // Q11 SE
+  {
+    dim:'SE', text:'Program reboisasi dan perlindungan hutan kampus bertujuan mencegah bencana dan menjaga keberlanjutan hidup. Program ini merepresentasikan hifdzun…',
+    options:['māl','nafs','dīn','nasl'],
+    answer:1, feedback:'Mencegah bencana dan menjaga keberlanjutan hidup = hifzh al-nafs (perlindungan jiwa dari ancaman ekologis).'
+  },
+  // Q12 RK
+  {
+    dim:'RK', text:'Menghindari penyebaran hoaks keagamaan di media sosial berkaitan dengan perlindungan/hifdzul…',
+    options:['māl','dīn','\'aql','nasl'],
+    answer:2, feedback:'Hoaks merusak kemampuan berpikir rasional = hifzh al-\'aql (menjaga akal).'
+  },
+  // Q13 IU
+  {
+    dim:'IU', text:'Kampus menyediakan layanan kesehatan mental untuk mencegah tindakan berisiko. Kebijakan ini paling tepat dikaitkan dengan hifdzun…',
+    options:['māl','dīn','nafs','\'aql'],
+    answer:2, feedback:'Mencegah tindakan berisiko (bunuh diri, self-harm) = hifzh al-nafs (menjaga jiwa).'
+  },
+  // Q14 SE
+  {
+    dim:'SE', text:'Menolak gratifikasi dan memastikan transparansi dana proyek kampus mencerminkan perlindungan terhadap…',
+    options:['agama','harta','akal pikiran','keturunan'],
+    answer:1, feedback:'Anti-gratifikasi dan transparansi keuangan = hifzh al-māl (menjaga harta dari penyalahgunaan).'
+  },
+  // Q15 SE
+  {
+    dim:'SE', text:'Larangan menyakiti manusia, hewan, dan merusak alam menunjukkan Islam sebagai agama yang…',
+    options:['Mengutamakan dominasi manusia','Menjaga kemaslahatan universal (rahmah)','Berorientasi ekonomi','Bersifat ritual semata'],
+    answer:1, feedback:'Islam rahmatan lil alamin: menjaga kemaslahatan universal mencakup manusia, hewan, dan alam.'
+  },
+  // Q16 IU
+  {
+    dim:'IU', text:'Mahasiswa menolak pandangan ekstrem dan memilih sikap adil serta seimbang. Prinsip yang tepat adalah…',
+    options:['Tasamuh','Tawazun','Tawassut','Ta\'assub'],
+    answer:2, feedback:'Menolak ekstremisme dan memilih sikap tengah = tawassut/tawasuth (wasatiyyah/moderasi).'
+  },
+  // Q17 SE
+  {
+    dim:'SE', text:'Edukasi pergaulan sehat dan pencegahan kekerasan seksual di kampus merepresentasikan hifdzun…',
+    options:['\'aql','nasl','māl','dīn'],
+    answer:1, feedback:'Pergaulan sehat dan pencegahan kekerasan seksual = hifzh al-nasl (menjaga keturunan/martabat manusia).'
+  },
+  // Q18 IU
+  {
+    dim:'IU', text:'Kunci husnul khātimah dalam kehidupan seorang muslim yang paling tepat adalah…',
+    options:['Husnuzan kepada semua orang tanpa mempertimbangkan kebenaran','Tabayyun dalam setiap informasi yang diterima','Memiliki hati yang baik dan konsisten dalam ketaatan hingga akhir hayat','Menjaga citra diri di hadapan manusia'],
+    answer:2, feedback:'Husnul khatimah = hati yang baik dan konsisten dalam ketaatan — ini lebih dari sekadar citra atau tabayyun saja.'
+  },
+  // Q19 SE
+  {
+    dim:'SE', text:'"Hati yang baik akan memancarkan kebaikan dalam sikap dan perilaku." Dalam perspektif Islam rahmatan lil \'alamin, kunci menjadi good believer yang paling tepat adalah…',
+    options:['Memperbanyak shalat sunah meskipun melalaikan kewajiban utama','Melatih kesalehan hati yang tercermin dalam kepedulian sosial dan kemaslahatan universal','Tirakat tanpa memperhatikan dampaknya terhadap orang lain','Menjaga jarak dari masyarakat demi kesalehan pribadi'],
+    answer:1, feedback:'Good believer = kesalehan hati yang tercermin dalam kepedulian sosial dan kemaslahatan universal.'
+  },
+  // Q20 RK
+  {
+    dim:'RK', text:'Mahasiswa yang sakit diperbolehkan shalat sambil duduk. Kebijakan ini mencerminkan…',
+    options:['Kelonggaran tanpa aturan','Inkonsistensi hukum','Kemudahan syariat yang mempertimbangkan kondisi (rukhsah)','Penghapusan kewajiban'],
+    answer:2, feedback:'Rukhsah = kemudahan syariat yang mempertimbangkan kondisi seseorang — ekspresi rahmah dalam hukum Islam.'
+  }
+];
+
+let currentQ = 0;
+const userAnswers = new Array(20).fill(null);
+let postScore = 0;
+
+function startQuiz() {
+  document.getElementById('quiz-intro').style.display = 'none';
+  document.getElementById('quiz-container').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('q-counter').textContent = `Soal ${currentQ + 1} dari 20`;
+  document.getElementById('q-dim-label').innerHTML = `<span class="q-dim-badge" style="background:${dimColor(q.dim)};color:white;">${q.dim}</span>`;
+  document.getElementById('q-progress-bar').style.width = ((currentQ + 1) / 20 * 100) + '%';
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-feedback').className = 'q-feedback';
+  document.getElementById('q-feedback').textContent = '';
+  document.getElementById('q-next-btn').style.display = 'none';
+  const optContainer = document.getElementById('q-options');
+  optContainer.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-option';
+    btn.textContent = String.fromCharCode(65 + i) + '. ' + opt;
+    btn.onclick = () => selectAnswer(i, btn);
+    optContainer.appendChild(btn);
+  });
+}
+
+function dimColor(dim) {
+  if (dim === 'RK') return '#1a5f6a';
+  if (dim === 'IU') return '#c8860a';
+  return '#a84228';
+}
+
+function selectAnswer(idx, btn) {
+  const q = questions[currentQ];
+  if (userAnswers[currentQ] !== null) return;
+  userAnswers[currentQ] = idx;
+  const opts = document.querySelectorAll('.q-option');
+  opts.forEach(o => o.disabled = true);
+  const isCorrect = idx === q.answer;
+  btn.classList.add(isCorrect ? 'selected-correct' : 'selected-wrong');
+  opts[q.answer].classList.add('show-correct');
+  const fb = document.getElementById('q-feedback');
+  fb.textContent = (isCorrect ? '✅ Benar! ' : '❌ Kurang tepat. ') + q.feedback;
+  fb.className = 'q-feedback show ' + (isCorrect ? 'ok' : 'no');
+  const nextBtn = document.getElementById('q-next-btn');
+  nextBtn.style.display = 'inline-flex';
+  nextBtn.textContent = currentQ < 19 ? 'Soal Berikutnya →' : 'Lihat Hasil →';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= 20) showResult();
+  else renderQuestion();
+}
+
+function showResult() {
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('quiz-result').style.display = 'block';
+
+  let total = 0;
+  const scores = { RK: 0, IU: 0, SE: 0 };
+  questions.forEach((q, i) => {
+    const correct = userAnswers[i] === q.answer;
+    if (correct) { total++; scores[q.dim]++; }
+  });
+  postScore = total;
+
+  document.getElementById('res-total').textContent = total;
+  document.getElementById('res-rk').textContent = scores.RK + '/7';
+  document.getElementById('res-iu').textContent = scores.IU + '/6';
+  document.getElementById('res-se').textContent = scores.SE + '/7';
+
+  // Profil
+  const section = document.getElementById('profil-section');
+  const pcts = {
+    RK: Math.round(scores.RK / 7 * 100),
+    IU: Math.round(scores.IU / 6 * 100),
+    SE: Math.round(scores.SE / 7 * 100)
+  };
+  const items = [
+    { dim:'RK', pct:pcts.RK, icon:'📖', href:'dim1-rk.html',
+      labelOk:'Religious Knowledge: Kuat. Pemahaman fondasi agama sudah solid.',
+      labelLow:'Religious Knowledge: Masih perlu diperkuat. Tinjau kembali materi Dimensi 1 terutama maqashid syariah.' },
+    { dim:'IU', pct:pcts.IU, icon:'🔍', href:'dim2-iu.html',
+      labelOk:'Interpretative Understanding: Baik. Kemampuan menafsirkan nilai Islam sudah meningkat.',
+      labelLow:'Interpretative Understanding: Perlu pendalaman lagi. Fokus pada tawassut dan tawazun.' },
+    { dim:'SE', pct:pcts.SE, icon:'🌍', href:'dim3-se.html',
+      labelOk:'Social Engagement: Baik. Kemampuan menerapkan nilai Islam dalam tindakan sosial sudah baik.',
+      labelLow:'Social Engagement: Perlu penguatan. Tinjau kembali hifzh al-nasl dan resolusi konflik.' }
+  ];
+  section.innerHTML = '<h3 style="margin-bottom:var(--space-4);">Refleksi per Dimensi</h3>' + items.map(it => `
+    <div style="display:flex;gap:var(--space-4);align-items:flex-start;padding:var(--space-4);background:var(--color-surface-offset);border-radius:var(--radius-lg);margin-bottom:var(--space-3);">
+      <div style="font-size:1.2rem;flex-shrink:0;">${it.icon}</div>
+      <div><strong style="display:block;font-size:var(--text-sm);margin-bottom:var(--space-1);">${it.dim} — ${it.pct}%</strong>
+      <p style="font-size:var(--text-xs);color:var(--color-text-muted);margin:0;">${it.pct >= 70 ? it.labelOk : it.labelLow}</p></div>
+    </div>
+  `).join('');
+}
+
+function calculateNGain() {
+  const preInput = parseInt(document.getElementById('prescore-input').value);
+  if (isNaN(preInput) || preInput < 0 || preInput > 20) {
+    alert('Masukkan skor pre-test yang valid (0–20).');
+    return;
+  }
+  const maxScore = 20;
+  const gain = postScore - preInput;
+  const maxGain = maxScore - preInput;
+  let ngain = 0;
+  if (maxGain <= 0) {
+    ngain = postScore >= maxScore ? 1 : 0;
+  } else {
+    ngain = gain / maxGain;
+  }
+  ngain = Math.max(0, Math.min(1, ngain));
+
+  let category, color, interpretation;
+  if (ngain >= 0.7) {
+    category = 'Tinggi (High Gain)'; color = '#2e7d32';
+    interpretation = 'N-Gain ≥ 0,7 menunjukkan peningkatan pembelajaran yang tinggi. Modul ini efektif meningkatkan literasi keagamaanmu secara signifikan. Hasil ini setara dengan temuan di kelas penelitian dengan metode yang tepat.';
+  } else if (ngain >= 0.3) {
+    category = 'Sedang (Moderate Gain)'; color = '#c8860a';
+    interpretation = 'N-Gain 0,3–0,7 menunjukkan peningkatan pembelajaran yang sedang. Kamu mengalami perkembangan yang cukup signifikan. Untuk meningkatkan lebih lanjut, tinjau kembali sub-materi penguatan terutama tawassut (D2) dan hifzh al-nasl (D3).';
+  } else {
+    category = 'Rendah (Low Gain)'; color = '#a84228';
+    interpretation = 'N-Gain < 0,3 menunjukkan peningkatan yang masih rendah. Ini bukan kegagalan — tinjau kembali materi penguatan di setiap dimensi, khususnya topik butir lemah. Diskusikan dengan dosen untuk penjelasan lebih lanjut.';
+  }
+
+  document.getElementById('prescore-card').style.display = 'none';
+  const ngainSection = document.getElementById('ngain-section');
+  ngainSection.style.display = 'block';
+  document.getElementById('ngain-value').textContent = ngain.toFixed(2);
+  document.getElementById('ngain-value').style.color = color;
+  document.getElementById('ngain-category').textContent = category;
+  document.getElementById('pre-display').textContent = preInput;
+  document.getElementById('post-display').textContent = postScore;
+  document.getElementById('ngain-bar').style.width = Math.min(ngain * 100, 100) + '%';
+  document.getElementById('ngain-bar').style.background = color;
+  document.getElementById('ngain-interpretation').textContent = interpretation;
+}
+
+function resetQuiz() {
+  currentQ = 0;
+  userAnswers.fill(null);
+  postScore = 0;
+  document.getElementById('quiz-result').style.display = 'none';
+  document.getElementById('prescore-card').style.display = 'block';
+  document.getElementById('ngain-section').style.display = 'none';
+  document.getElementById('prescore-input').value = '';
+  document.getElementById('quiz-intro').style.display = 'block';
+}
+</script>
+<script data-pplx-inline-edit>
+(function(){
+  if(window===window.top)return;
+  function inlineAll(orig,clone){
+    if(orig.nodeType!==1)return;
+    try{
+      var cs=getComputedStyle(orig);
+      var t='';
+      for(var i=0;i<cs.length;i++){t+=cs[i]+':'+cs.getPropertyValue(cs[i])+';';}
+      clone.style.cssText=t;
+    }catch(e){}
+    var oc=orig.children,cc=clone.children;
+    for(var j=0;j<oc.length&&j<cc.length;j++){inlineAll(oc[j],cc[j]);}
+  }
+  function stripExternal(clone){
+    var imgs=clone.querySelectorAll('img');
+    for(var i=0;i<imgs.length;i++){
+      var s=imgs[i].getAttribute('src');
+      if(s&&!s.startsWith('data:'))imgs[i].removeAttribute('src');
+    }
+    var all=clone.querySelectorAll('*');
+    for(var i=0;i<all.length;i++){
+      var st=all[i].style.cssText;
+      if(st&&st.indexOf('url(')>=0){
+        all[i].style.cssText=st.replace(/url\(["']?(?!data:)[^)"']*["']?\)/gi,'none');
+      }
+    }
+  }
+  var scrollRaf=0;
+  function emitScroll(){
+    scrollRaf=0;
+    var x=window.scrollX||window.pageXOffset||0;
+    var y=window.scrollY||window.pageYOffset||0;
+    window.parent.postMessage({type:'INLINE_EDIT_SCROLL',scrollX:x,scrollY:y},'*');
+  }
+  window.addEventListener('scroll',function(){
+    if(scrollRaf)return;
+    scrollRaf=requestAnimationFrame(emitScroll);
+  },{passive:true,capture:true});
+  emitScroll();
+  window.addEventListener('message',function(e){
+    if(!e.data||e.data.type!=='INLINE_EDIT_CAPTURE_REQUEST')return;
+    var scrollX=window.scrollX||window.pageXOffset||0;
+    var scrollY=window.scrollY||window.pageYOffset||0;
+    var w=window.innerWidth,h=window.innerHeight;
+    try{
+      var clone=document.documentElement.cloneNode(true);
+      var rm=clone.querySelectorAll('script,link[rel="stylesheet"],style');
+      for(var i=0;i<rm.length;i++){rm[i].remove();}
+      inlineAll(document.documentElement,clone);
+      stripExternal(clone);
+      var html=new XMLSerializer().serializeToString(clone);
+      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'
+        +'<foreignObject width="100%" height="100%">'
+        +'<div xmlns="http://www.w3.org/1999/xhtml" style="width:'+w+'px;height:'+h+'px;overflow:hidden">'
+        +'<div style="transform:translate(-'+scrollX+'px,-'+scrollY+'px);transform-origin:top left">'
+        +html+'</div></div></foreignObject></svg>';
+      var svgUrl='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+      var img=new Image();
+      img.onload=function(){
+        var c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0);
+        window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:c.toDataURL('image/png'),scrollX:scrollX,scrollY:scrollY},'*');
+      };
+      img.onerror=function(){
+        window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:null,scrollX:scrollX,scrollY:scrollY},'*');
+      };
+      img.src=svgUrl;
+    }catch(err){
+      window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:null,scrollX:scrollX,scrollY:scrollY},'*');
+    }
+  });
+})();
+</script></body>
+</html>

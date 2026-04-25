@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modul 3: Kontribusi Sosial Islam — PAI Rahmatan</title>
+  <meta name="description" content="Modul 3 PAI: Mengimplementasikan nilai-nilai Islam dalam aksi sosial nyata — program pemberdayaan, filantropi, dan peran Muslim dalam peradaban." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://api.fontshare.com/v2/css?f[]=chillax@300,400,500,600,700&f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .module-hero {
+      background: linear-gradient(135deg, #7c1d1d 0%, #a84228 60%, #c04a2e 100%);
+      color: white;
+      padding-block: clamp(var(--space-12), 8vw, var(--space-20));
+      position: relative;
+      overflow: hidden;
+    }
+    .module-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='25' fill='none' stroke='rgba(255,255,255,0.06)' stroke-width='1'/%3E%3Cpath d='M30 5L55 30L30 55L5 30Z' fill='none' stroke='rgba(255,255,255,0.04)' stroke-width='1'/%3E%3C/svg%3E");
+    }
+    .module-hero h1 { color: white; font-size: var(--text-2xl); margin-bottom: var(--space-4); }
+    .module-hero p { color: rgba(255,255,255,0.85); font-size: var(--text-lg); max-width: 54ch; }
+    .module-hero .badge { background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); }
+    .module-hero .breadcrumb { font-size: var(--text-sm); color: rgba(255,255,255,0.65); margin-bottom: var(--space-5); display: flex; align-items: center; gap: var(--space-2); }
+    .module-hero .breadcrumb a { color: rgba(255,255,255,0.75); text-decoration: none; }
+
+    .contribution-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .contribution-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+    .contribution-header {
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      border-bottom: 1px solid var(--color-divider);
+    }
+    .contribution-body { padding: var(--space-4) var(--space-5); }
+    .contribution-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 1.25rem;
+    }
+
+    .project-rubric {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .rubric-header {
+      background: var(--color-primary);
+      color: white;
+      padding: var(--space-4) var(--space-5);
+      font-weight: 700;
+      font-size: var(--text-sm);
+    }
+    .rubric-row {
+      display: grid;
+      grid-template-columns: 200px 1fr 1fr 1fr;
+      border-bottom: 1px solid var(--color-divider);
+    }
+    .rubric-row:last-child { border-bottom: none; }
+    .rubric-cell {
+      padding: var(--space-3) var(--space-4);
+      font-size: var(--text-xs);
+      border-right: 1px solid var(--color-divider);
+    }
+    .rubric-cell:last-child { border-right: none; }
+    .rubric-cell.label { font-weight: 700; background: var(--color-surface-offset); }
+    .rubric-header-row { background: var(--color-surface-offset); font-weight: 700; font-size: var(--text-xs); color: var(--color-text-muted); letter-spacing: 0.05em; }
+    @media (max-width: 640px) { .rubric-row { grid-template-columns: 1fr; } .rubric-cell.label { background: var(--color-primary-light); color: var(--color-primary); } }
+
+    .nav-bottom { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding-block: var(--space-8); border-top: 1px solid var(--color-divider); flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container container--wide">
+    <nav class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="#1a5f6a"/>
+          <path d="M16 6 C16 6, 10 10, 10 16 C10 22, 13 26, 16 26 C19 26, 22 22, 22 16 C22 10, 16 6, 16 6Z" fill="none" stroke="#c8860a" stroke-width="1.5"/>
+          <circle cx="16" cy="16" r="3" fill="#c8860a"/>
+        </svg>
+        <span>PAI <span style="color:var(--color-gold)">Rahmatan</span></span>
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="modul1.html">Toleransi</a></li>
+        <li><a href="modul2.html">Moderasi</a></li>
+        <li><a href="modul3.html" class="active">Kontribusi Sosial</a></li>
+        <li><a href="kuis.html">Kuis</a></li>
+        <li><a href="template-proyek.html">Template Proyek</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="btn-theme" data-theme-toggle></button>
+        <button class="nav-mobile-btn" aria-expanded="false">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<div class="module-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Beranda</a>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      <span>Modul 3: Kontribusi Sosial Islam</span>
+    </div>
+    <span class="badge" style="margin-bottom: var(--space-4); display: inline-flex;">🤝 Modul 3 dari 3</span>
+    <h1>Kontribusi Sosial<br><span style="color: #ffd699;">Islam untuk Dunia</span></h1>
+    <p>Mengimplementasikan Islam sebagai rahmat bagi semesta melalui aksi sosial nyata, filantropi Islam, dan pemberdayaan masyarakat.</p>
+    <div style="margin-top: var(--space-6); display: flex; gap: var(--space-4); flex-wrap: wrap; align-items: center;">
+      <span style="font-size: var(--text-sm); opacity: 0.7;">⏱ Estimasi: 120 menit</span>
+      <span style="font-size: var(--text-sm); opacity: 0.7;">📚 Fase E · Kelas X</span>
+      <span style="font-size: var(--text-sm); opacity: 0.7;">🎯 PjBL + Service Learning</span>
+    </div>
+  </div>
+</div>
+
+<main>
+<div class="container" style="padding-top: var(--space-10);">
+  <div class="content-layout">
+    <aside class="content-sidebar">
+      <p style="font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-muted); margin-bottom: var(--space-4);">DAFTAR ISI</p>
+      <nav>
+        <a href="#cp" class="sidebar-nav-item"><span class="dot"></span>Capaian Pembelajaran</a>
+        <a href="#konsep" class="sidebar-nav-item"><span class="dot"></span>Islam & Kontribusi Sosial</a>
+        <a href="#instrumen" class="sidebar-nav-item"><span class="dot"></span>Instrumen Filantropi</a>
+        <a href="#sejarah" class="sidebar-nav-item"><span class="dot"></span>Sejarah Kontribusi Islam</a>
+        <a href="#video" class="sidebar-nav-item"><span class="dot"></span>Video Pembelajaran</a>
+        <a href="#proyek" class="sidebar-nav-item"><span class="dot"></span>Proyek Sosial PjBL</a>
+        <a href="#rubrik" class="sidebar-nav-item"><span class="dot"></span>Rubrik Penilaian</a>
+      </nav>
+      <div style="margin-top: var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--color-divider);">
+        <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-3);">Kemajuan Modul</p>
+        <div class="progress-bar"><div class="progress-bar__fill" data-width="100%"></div></div>
+        <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-2);">Modul 3 dari 3 ✓</p>
+      </div>
+    </aside>
+
+    <article>
+
+      <section id="cp" class="reveal">
+        <p class="section-label">Capaian Pembelajaran</p>
+        <h2 class="section-title">Tujuan Modul Ini</h2>
+        <div class="grid-2" style="gap: var(--space-4);">
+          <div style="display: flex; gap: var(--space-3); padding: var(--space-4); background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-divider);">
+            <div style="width: 22px; height: 22px; background: var(--color-success); border-radius: 999px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; color: white; font-size: 11px;">✓</div>
+            <span style="font-size: var(--text-sm);">Menjelaskan konsep Islam sebagai rahmat dan agen perubahan sosial</span>
+          </div>
+          <div style="display: flex; gap: var(--space-3); padding: var(--space-4); background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-divider);">
+            <div style="width: 22px; height: 22px; background: var(--color-success); border-radius: 999px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; color: white; font-size: 11px;">✓</div>
+            <span style="font-size: var(--text-sm);">Menganalisis instrumen filantropi Islam: zakat, infak, sedekah, wakaf</span>
+          </div>
+          <div style="display: flex; gap: var(--space-3); padding: var(--space-4); background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-divider);">
+            <div style="width: 22px; height: 22px; background: var(--color-success); border-radius: 999px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; color: white; font-size: 11px;">✓</div>
+            <span style="font-size: var(--text-sm);">Merancang proyek sosial berbasis nilai-nilai Islam</span>
+          </div>
+          <div style="display: flex; gap: var(--space-3); padding: var(--space-4); background: var(--color-surface); border-radius: var(--radius-md); border: 1px solid var(--color-divider);">
+            <div style="width: 22px; height: 22px; background: var(--color-success); border-radius: 999px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; color: white; font-size: 11px;">✓</div>
+            <span style="font-size: var(--text-sm);">Mempresentasikan hasil proyek sosial kepada komunitas</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="ornament-divider reveal"><span style="font-size: 1rem;">✦</span></div>
+
+      <section id="konsep" class="reveal">
+        <p class="section-label">Materi Inti</p>
+        <h2 class="section-title">Islam sebagai Agen Perubahan Sosial</h2>
+        <p style="margin-bottom: var(--space-4);">Islam tidak hanya mengatur hubungan vertikal manusia dengan Allah (habluminallah), tetapi juga hubungan horizontal antar manusia dan dengan alam (habluminannas wa habluminal-'alam). Inilah inti dari Islam Rahmatan Lil Alamin.</p>
+        <div class="quote-block">
+          <p class="ayat">وَمَا أَرْسَلْنَاكَ إِلَّا رَحْمَةً لِّلْعَالَمِينَ</p>
+          <p class="terjemah">"Dan Kami tidak mengutus engkau (Muhammad) melainkan untuk (menjadi) rahmat bagi seluruh alam."</p>
+          <p class="sumber">QS. Al-Anbiya' [21]: 107</p>
+        </div>
+        <div class="grid-3" style="gap: var(--space-4); margin-top: var(--space-6);">
+          <div class="card text-center" style="border-top: 3px solid var(--color-primary);">
+            <div style="font-size: 2rem; margin-bottom: var(--space-3);">🕌</div>
+            <h4 style="font-size: var(--text-sm); font-weight: 700; margin-bottom: var(--space-2);">Habluminallah</h4>
+            <p style="font-size: var(--text-xs); color: var(--color-text-muted);">Hubungan dengan Allah: ibadah, tazkiyatun nafs, taqarrub ilallah</p>
+          </div>
+          <div class="card text-center" style="border-top: 3px solid var(--color-gold);">
+            <div style="font-size: 2rem; margin-bottom: var(--space-3);">🤝</div>
+            <h4 style="font-size: var(--text-sm); font-weight: 700; margin-bottom: var(--space-2);">Habluminannas</h4>
+            <p style="font-size: var(--text-xs); color: var(--color-text-muted);">Hubungan dengan manusia: keadilan, kasih sayang, gotong royong</p>
+          </div>
+          <div class="card text-center" style="border-top: 3px solid var(--color-success);">
+            <div style="font-size: 2rem; margin-bottom: var(--space-3);">🌿</div>
+            <h4 style="font-size: var(--text-sm); font-weight: 700; margin-bottom: var(--space-2);">Habluminal 'Alam</h4>
+            <p style="font-size: var(--text-xs); color: var(--color-text-muted);">Hubungan dengan alam: khalifah fil ardh, menjaga lingkungan</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="instrumen" class="reveal">
+        <p class="section-label">Filantropi Islam</p>
+        <h2 class="section-title">Instrumen Kontribusi Sosial</h2>
+        <div class="grid-2" style="gap: var(--space-5);">
+          <div class="contribution-card">
+            <div class="contribution-header">
+              <div class="contribution-icon" style="background: var(--color-gold-light); color: var(--color-gold);">🌙</div>
+              <div>
+                <h3 style="font-size: var(--text-base); font-weight: 700;">Zakat</h3>
+                <span class="badge badge--gold">Wajib (Rukun Islam ke-4)</span>
+              </div>
+            </div>
+            <div class="contribution-body">
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-3);">Kewajiban menyisihkan 2,5% harta bagi yang memenuhi nisab. Indonesia adalah negara dengan potensi zakat terbesar di dunia — mencapai Rp 327 triliun/tahun (BAZNAS, 2022).</p>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <span class="badge badge--gold">8 Asnaf Mustahiq</span>
+                <span class="badge badge--teal">Zakat Mal & Fitrah</span>
+              </div>
+            </div>
+          </div>
+          <div class="contribution-card">
+            <div class="contribution-header">
+              <div class="contribution-icon" style="background: var(--color-primary-light); color: var(--color-primary);">💧</div>
+              <div>
+                <h3 style="font-size: var(--text-base); font-weight: 700;">Infak & Sedekah</h3>
+                <span class="badge badge--teal">Sangat Dianjurkan</span>
+              </div>
+            </div>
+            <div class="contribution-body">
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-3);">Infak dan sedekah tidak terbatas nisab — bisa dilakukan kapan saja dalam jumlah berapapun. Bahkan senyuman kepada sesama adalah sedekah (HR. Muslim).</p>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <span class="badge badge--teal">Tidak Terbatas Jumlah</span>
+                <span class="badge badge--gold">Berlipat Ganda Pahala</span>
+              </div>
+            </div>
+          </div>
+          <div class="contribution-card">
+            <div class="contribution-header">
+              <div class="contribution-icon" style="background: var(--color-secondary-highlight); color: var(--color-secondary);">🏛️</div>
+              <div>
+                <h3 style="font-size: var(--text-base); font-weight: 700;">Wakaf</h3>
+                <span class="badge badge--red">Investasi Peradaban</span>
+              </div>
+            </div>
+            <div class="contribution-body">
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-3);">Wakaf adalah aset yang manfaatnya diperuntukkan bagi kepentingan umum secara permanen. Masjid, sekolah, rumah sakit, dan lembaga pendidikan Islam banyak didirikan melalui wakaf.</p>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <span class="badge badge--red">Wakaf Uang & Aset</span>
+                <span class="badge badge--teal">Pahala Jariyah</span>
+              </div>
+            </div>
+          </div>
+          <div class="contribution-card">
+            <div class="contribution-header">
+              <div class="contribution-icon" style="background: var(--color-success-highlight); color: var(--color-success);">🌱</div>
+              <div>
+                <h3 style="font-size: var(--text-base); font-weight: 700;">Aksi Sosial Langsung</h3>
+                <span class="badge" style="background: var(--color-success-highlight); color: var(--color-success);">Community Service</span>
+              </div>
+            </div>
+            <div class="contribution-body">
+              <p style="font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-3);">Amar ma'ruf nahi munkar dalam bentuk aksi langsung: mengajar anak yatim, membersihkan masjid, bank sampah, bakti sosial, donor darah, dan pemberdayaan ekonomi komunitas.</p>
+              <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+                <span class="badge" style="background: var(--color-success-highlight); color: var(--color-success);">SDGs 2030</span>
+                <span class="badge badge--gold">Inklusif</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="sejarah" class="reveal">
+        <p class="section-label">Konteks Historis</p>
+        <h2 class="section-title">Islam dalam Sejarah Peradaban</h2>
+        <div data-accordion-group>
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false">
+              <span>🌟 Masa Keemasan Islam (Golden Age)</span>
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p style="font-size: var(--text-sm); margin-bottom: var(--space-3);">Pada abad ke-8 hingga ke-13 M, peradaban Islam mencapai puncaknya. Rumah Sakit pertama di dunia dibangun di Baghdad (Bimaristan). Al-Khawarizmi memperkenalkan aljabar. Ibn Sina menulis ensiklopedia kedokteran. Al-Biruni mempelopori astronomi dan geografi.</p>
+              <p style="font-size: var(--text-xs); color: var(--color-gold);">Kunci: Ilmu pengetahuan adalah ibadah dan kontribusi untuk kemanusiaan.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false">
+              <span>🇮🇩 Islam dan Perjuangan Kemerdekaan Indonesia</span>
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p style="font-size: var(--text-sm); margin-bottom: var(--space-3);">Ulama dan santri berperan besar dalam kemerdekaan Indonesia. Resolusi Jihad KH. Hasyim Asy'ari (22 Oktober 1945) membakar semangat perjuangan. KH. Ahmad Dahlan mendirikan Muhammadiyah (1912) yang membangun ribuan sekolah dan rumah sakit.</p>
+              <p style="font-size: var(--text-xs); color: var(--color-gold);">Pelajaran: Islam hadir membangun bangsa, bukan memecah belah.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" aria-expanded="false">
+              <span>🌿 Islam dan Lingkungan Hidup</span>
+              <svg class="chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="accordion-body">
+              <p style="font-size: var(--text-sm); margin-bottom: var(--space-3);">Al-Qur'an menegaskan manusia sebagai khalifah (wakil) Allah di bumi, dengan tanggung jawab menjaga kelestarian alam. Fatwa MUI No. 4/2014 tentang pelestarian satwa liar yang terancam punah, dan gerakan "Eco Mosque" di berbagai negara.</p>
+              <p style="font-size: var(--text-xs); color: var(--color-gold);">Dalil: "Dan janganlah kamu membuat kerusakan di muka bumi setelah Allah memperbaikinya." (QS. Al-A'raf: 56)</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="video" class="reveal">
+        <p class="section-label">Multimedia</p>
+        <h2 class="section-title">Video Inspirasi</h2>
+        <div class="grid-2">
+          <div>
+            <div class="video-wrapper">
+              <iframe src="https://www.youtube.com/embed/8cK9MAlJ9Kw" title="Islam dan Kontribusi Sosial" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-3);">📽 Kisah Inspiratif: Muslim Berkontribusi</p>
+          </div>
+          <div>
+            <div class="video-wrapper">
+              <iframe src="https://www.youtube.com/embed/vl_2jvLa7go" title="Zakat dan Pemberdayaan Masyarakat" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+            </div>
+            <p style="font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-3);">📽 Zakat dan Pemberdayaan Ekonomi Umat</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="proyek" class="reveal">
+        <p class="section-label">Project-Based Learning — Service Learning</p>
+        <h2 class="section-title">Proyek Sosial: "Aksi Nyata Rahmatan"</h2>
+        <div style="border: 2px dashed var(--color-border); border-radius: var(--radius-xl); padding: var(--space-8); background: var(--color-surface);">
+          <h3 style="font-size: var(--text-lg); font-weight: 700; color: var(--color-secondary); margin-bottom: var(--space-2);">🎯 Pertanyaan Pemandu</h3>
+          <p style="color: var(--color-text-muted); font-style: italic; margin-bottom: var(--space-6);">"Apa problem sosial nyata di sekitar sekolah kita, dan bagaimana nilai-nilai Islam memberi solusi?"</p>
+
+          <h4 style="font-size: var(--text-base); font-weight: 700; margin-bottom: var(--space-4);">Tahapan Proyek (3 Minggu):</h4>
+          <div class="steps-list">
+            <div class="step-item">
+              <div class="step-number" style="background: var(--color-secondary);">1</div>
+              <div class="step-content">
+                <h4>Identifikasi Masalah (Minggu 1)</h4>
+                <p>Lakukan observasi dan pemetaan masalah sosial di lingkungan sekolah/masyarakat sekitar. Pilih satu masalah yang akan diselesaikan: kemiskinan, pendidikan, lingkungan, atau kesehatan.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number" style="background: var(--color-gold);">2</div>
+              <div class="step-content">
+                <h4>Rancang Solusi Islami (Minggu 1-2)</h4>
+                <p>Hubungkan masalah dengan nilai-nilai Islam (zakat, sedekah, ta'awun). Buat rencana aksi yang konkret, terukur, dan dapat dilaksanakan dalam batas waktu proyek.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number" style="background: var(--color-primary);">3</div>
+              <div class="step-content">
+                <h4>Implementasi Aksi (Minggu 2-3)</h4>
+                <p>Jalankan aksi sosial nyata: penggalangan dana, kegiatan bakti sosial, pelatihan, atau kampanye. Dokumentasikan seluruh proses dengan foto/video.</p>
+              </div>
+            </div>
+            <div class="step-item">
+              <div class="step-number" style="background: var(--color-success);">4</div>
+              <div class="step-content">
+                <h4>Evaluasi & Presentasi (Minggu 3)</h4>
+                <p>Presentasikan seluruh proyek: masalah, solusi, proses, hasil, dan pelajaran yang dipetik. Buat laporan akhir dan refleksi kelompok.</p>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--space-6); padding: var(--space-4); background: var(--color-gold-light); border-radius: var(--radius-md); border: 1px solid var(--color-gold-highlight);">
+            <p style="font-size: var(--text-sm); font-weight: 700; color: var(--color-gold); margin-bottom: var(--space-2);">💡 Ide Proyek Sosial</p>
+            <div class="grid-2" style="gap: var(--space-2);">
+              <span style="font-size: var(--text-xs);">• Bank sampah berbasis komunitas mushala</span>
+              <span style="font-size: var(--text-xs);">• Donasi perlengkapan sekolah untuk anak yatim</span>
+              <span style="font-size: var(--text-xs);">• Bazar amal lintas agama</span>
+              <span style="font-size: var(--text-xs);">• Penanaman pohon di area sekolah</span>
+              <span style="font-size: var(--text-xs);">• Kelas belajar gratis untuk anak kurang mampu</span>
+              <span style="font-size: var(--text-xs);">• Kampanye anti-bullying berbasis nilai Islam</span>
+            </div>
+          </div>
+          <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-6);">
+            <a href="template-proyek.html" class="btn btn--primary">📋 Template Proyek Sosial</a>
+            <a href="kuis.html" class="btn btn--outline">🧩 Kuis Akhir Modul</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Rubrik -->
+      <section id="rubrik" class="reveal">
+        <p class="section-label">Evaluasi</p>
+        <h2 class="section-title">Rubrik Penilaian Proyek</h2>
+        <div class="project-rubric">
+          <div class="rubric-header">Rubrik Penilaian Proyek Kontribusi Sosial — PAI Kelas X</div>
+          <div class="rubric-row rubric-header-row">
+            <div class="rubric-cell label">Aspek Penilaian</div>
+            <div class="rubric-cell">Kurang (1-60)</div>
+            <div class="rubric-cell">Cukup (61-75)</div>
+            <div class="rubric-cell">Baik (76-100)</div>
+          </div>
+          <div class="rubric-row">
+            <div class="rubric-cell label">Relevansi Nilai Islam (20%)</div>
+            <div class="rubric-cell">Tidak ada kaitan dengan nilai Islam</div>
+            <div class="rubric-cell">Kaitan nilai Islam kurang eksplisit</div>
+            <div class="rubric-cell">Nilai Islam terintegrasi dengan jelas dan mendalam</div>
+          </div>
+          <div class="rubric-row">
+            <div class="rubric-cell label">Dampak Sosial (25%)</div>
+            <div class="rubric-cell">Tidak ada dampak nyata pada masyarakat</div>
+            <div class="rubric-cell">Ada dampak kecil, terbatas satu pihak</div>
+            <div class="rubric-cell">Dampak signifikan, terukur, menyentuh banyak pihak</div>
+          </div>
+          <div class="rubric-row">
+            <div class="rubric-cell label">Kolaborasi Tim (20%)</div>
+            <div class="rubric-cell">Tidak ada pembagian peran yang jelas</div>
+            <div class="rubric-cell">Ada peran tapi tidak semua aktif</div>
+            <div class="rubric-cell">Semua anggota aktif, pembagian peran jelas dan adil</div>
+          </div>
+          <div class="rubric-row">
+            <div class="rubric-cell label">Dokumentasi & Laporan (20%)</div>
+            <div class="rubric-cell">Dokumentasi tidak lengkap</div>
+            <div class="rubric-cell">Dokumentasi cukup, laporan kurang rinci</div>
+            <div class="rubric-cell">Dokumentasi lengkap, laporan detail dan sistematis</div>
+          </div>
+          <div class="rubric-row">
+            <div class="rubric-cell label">Presentasi (15%)</div>
+            <div class="rubric-cell">Tidak percaya diri, kurang informasi</div>
+            <div class="rubric-cell">Cukup jelas namun kurang menarik</div>
+            <div class="rubric-cell">Percaya diri, informatif, dan komunikatif</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="nav-bottom">
+        <a href="modul2.html" class="btn btn--ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          Modul 2: Moderasi
+        </a>
+        <div style="display: flex; gap: var(--space-3);">
+          <a href="kuis.html" class="btn btn--gold">🧩 Ikuti Kuis</a>
+          <a href="template-proyek.html" class="btn btn--primary">📋 Template Proyek</a>
+        </div>
+      </div>
+
+    </article>
+  </div>
+</div>
+</main>
+
+<footer class="site-footer">
+  <div class="container container--wide">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">PAI <span style="color: var(--color-gold);">Rahmatan</span></div>
+        <p class="footer-desc">Modul 3: Kontribusi Sosial Islam — PAI Rahmatan Lil Alamin.</p>
+      </div>
+      <div>
+        <p class="footer-heading">Semua Modul</p>
+        <ul class="footer-links" role="list">
+          <li><a href="modul1.html">Modul 1: Toleransi</a></li>
+          <li><a href="modul2.html">Modul 2: Moderasi</a></li>
+          <li><a href="kuis.html">Kuis Interaktif</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-heading">Sumber</p>
+        <ul class="footer-links" role="list">
+          <li><a href="template-proyek.html">Template Proyek</a></li>
+          <li><a href="index.html">Beranda</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Modul PAI Rahmatan Lil Alamin</span>
+      <span>Kurikulum Merdeka · Fase E</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script data-pplx-inline-edit>
+(function(){
+  if(window===window.top)return;
+  function inlineAll(orig,clone){
+    if(orig.nodeType!==1)return;
+    try{
+      var cs=getComputedStyle(orig);
+      var t='';
+      for(var i=0;i<cs.length;i++){t+=cs[i]+':'+cs.getPropertyValue(cs[i])+';';}
+      clone.style.cssText=t;
+    }catch(e){}
+    var oc=orig.children,cc=clone.children;
+    for(var j=0;j<oc.length&&j<cc.length;j++){inlineAll(oc[j],cc[j]);}
+  }
+  function stripExternal(clone){
+    var imgs=clone.querySelectorAll('img');
+    for(var i=0;i<imgs.length;i++){
+      var s=imgs[i].getAttribute('src');
+      if(s&&!s.startsWith('data:'))imgs[i].removeAttribute('src');
+    }
+    var all=clone.querySelectorAll('*');
+    for(var i=0;i<all.length;i++){
+      var st=all[i].style.cssText;
+      if(st&&st.indexOf('url(')>=0){
+        all[i].style.cssText=st.replace(/url\(["']?(?!data:)[^)"']*["']?\)/gi,'none');
+      }
+    }
+  }
+  var scrollRaf=0;
+  function emitScroll(){
+    scrollRaf=0;
+    var x=window.scrollX||window.pageXOffset||0;
+    var y=window.scrollY||window.pageYOffset||0;
+    window.parent.postMessage({type:'INLINE_EDIT_SCROLL',scrollX:x,scrollY:y},'*');
+  }
+  window.addEventListener('scroll',function(){
+    if(scrollRaf)return;
+    scrollRaf=requestAnimationFrame(emitScroll);
+  },{passive:true,capture:true});
+  emitScroll();
+  window.addEventListener('message',function(e){
+    if(!e.data||e.data.type!=='INLINE_EDIT_CAPTURE_REQUEST')return;
+    var scrollX=window.scrollX||window.pageXOffset||0;
+    var scrollY=window.scrollY||window.pageYOffset||0;
+    var w=window.innerWidth,h=window.innerHeight;
+    try{
+      var clone=document.documentElement.cloneNode(true);
+      var rm=clone.querySelectorAll('script,link[rel="stylesheet"],style');
+      for(var i=0;i<rm.length;i++){rm[i].remove();}
+      inlineAll(document.documentElement,clone);
+      stripExternal(clone);
+      var html=new XMLSerializer().serializeToString(clone);
+      var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'">'
+        +'<foreignObject width="100%" height="100%">'
+        +'<div xmlns="http://www.w3.org/1999/xhtml" style="width:'+w+'px;height:'+h+'px;overflow:hidden">'
+        +'<div style="transform:translate(-'+scrollX+'px,-'+scrollY+'px);transform-origin:top left">'
+        +html+'</div></div></foreignObject></svg>';
+      var svgUrl='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg);
+      var img=new Image();
+      img.onload=function(){
+        var c=document.createElement('canvas');c.width=w;c.height=h;
+        c.getContext('2d').drawImage(img,0,0);
+        window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:c.toDataURL('image/png'),scrollX:scrollX,scrollY:scrollY},'*');
+      };
+      img.onerror=function(){
+        window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:null,scrollX:scrollX,scrollY:scrollY},'*');
+      };
+      img.src=svgUrl;
+    }catch(err){
+      window.parent.postMessage({type:'INLINE_EDIT_SCREENSHOT_RESULT',dataUrl:null,scrollX:scrollX,scrollY:scrollY},'*');
+    }
+  });
+})();
+</script></body>
+</html>
